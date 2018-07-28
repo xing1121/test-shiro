@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="300 seconds" debug="false">
+
+	<!-- 格式 -->
+	<property name="LOG_FORMAT" value="%d{yyyy-MM-dd HH:mm:ss:SSS} %-5level [%thread] %class.%method\\(%F:%L\\) - %msg%n" />
+	<!-- 生成文件根目录 -->
+	<property name="LOG_HOME" value="./logs" />
+	
+	<!-- 控制台输出 -->
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<Encoding>UTF-8</Encoding>
+		<!-- 布局 -->
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss:SSS} %-5level [%thread] %C:%M - %msg%n</pattern>
+		</layout>
+	</appender>
+	
+	<!-- 日志分级别分开保存 -->
+	<!-- 所有日志 -->
+	<appender name="ALL-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<Encoding>UTF-8</Encoding>
+		<encoder charset="UTF-8">
+            <pattern>${LOG_FORMAT}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/all/sys_all_log_%d{yyyyMMdd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>100</maxHistory>
+        </rollingPolicy>
+	</appender>
+	
+	<!-- ERROR日志 -->
+	<appender name="ERROR-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+<!-- 	    <filter class="ch.qos.logback.classic.filter.ThresholdFilter"> -->
+<!-- 	      	<level>ERROR</level> -->
+<!-- 	    </filter> -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>DENY</onMatch>
+		</filter> 
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>WARN</level>
+			<onMatch>DENY</onMatch>
+		</filter> 
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+		</filter> 
+		<Encoding>UTF-8</Encoding>
+		<encoder charset="UTF-8">
+            <pattern>${LOG_FORMAT}</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/error/sys_error_log_%d{yyyyMMdd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>100</maxHistory>
+        </rollingPolicy>
+	</appender>
+
+	<!-- 默认控制器 -->
+	<root level="INFO">
+		<appender-ref ref="ALL-FILE" /> 
+		<appender-ref ref="ERROR-FILE" /> 
+    	<appender-ref ref="CONSOLE" /> 
+	</root>
+	
+</configuration>  
